@@ -6,7 +6,7 @@ helpFunction()
    echo ""
    echo "Usage: $0 -m message -t version tag"
    echo -e "\t-m Commit message"
-   echo -e "\t-b Version tag"
+   echo -e "\t-t Version tag"
    exit 1 # Exit script after printing help
 }
 while getopts "m:t:" opt
@@ -25,6 +25,8 @@ then
 fi
 
 git add .
+git commit -m "$parameterMessage";
+
 if [ -z "$parameterTag"]
 then
 	echo "No tag specified... Ignoring...";
@@ -32,10 +34,9 @@ else
 	echo "Tagging as $parameterTag";
 	git tag -a "$parameterTag" -m "$parameterTag";
 fi
-git commit -m "$parameterMessage";
 
 HEAD="<h1>Changelog</h1><br />";
-HTML=$(git log --pretty=format:'<h2>%d</h2><li> <a href="http://github.com/Malod219/BermudaGlitch/commit/%H">view commit &bull;</a> %s</li> ' | sed -e 's/<h2><\/h2>//g' -e 's/(HEAD -> master)/(Unreleased)/g' -e 's/<h2> (origin\/master)<\/h2>//g');
+HTML=$(git log --pretty=format:'<h2>%d</h2><li> <a href="http://github.com/Malod219/BermudaGlitch/commit/%H">view commit &bull;</a> %s</li> ' | sed -e 's/<h2><\/h2>//g' -e 's/(HEAD -> master)/(Unreleased)/g' -e 's/<h2> (origin\/master)<\/h2>//g' -e 's/HEAD -> master, //g');
 FULLHTML="$HEAD$HTML";
 echo $FULLHTML > CHANGELOG.md;
 
